@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SymptoScan - Analyzer</title>
+
+<style>
+/* ===== BACKGROUND ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #e6d8cc; /* 🔴 SAME AS YOUR DESIGN */
+}
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    align-items: center;
+}
+
+.logo {
+    font-size: 28px;
+    color: #6b3e26;
+    font-weight: bold;
+}
+
+.back-btn {
+    border: 1px solid #6b3e26;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* ===== MAIN LAYOUT ===== */
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* ===== CARDS ===== */
+.card {
+    background: #f7f2ee;
+    border-radius: 20px;
+    padding: 20px;
+    flex: 1;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ===== SYMPTOMS LIST ===== */
+.symptom {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin: 8px 0;
+    background: #fff;
+    border-radius: 10px;
+}
+
+/* ===== BUTTONS ===== */
+.main-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.analyze {
+    background: #6b3e26;
+    color: white;
+}
+
+.reset {
+    border: 1px solid #6b3e26;
+    background: transparent;
+}
+
+/* ===== RESULT BOX ===== */
+.result-box {
+    background: #e8d2c5;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">SYMPTOSCAN</div>
+
+    <!-- 🔴 BACK BUTTON -->
+    <button class="back-btn" onclick="goBack()">← Back</button>
+</div>
+
+<div class="container">
+
+    <!-- ===== LEFT: SYMPTOMS ===== -->
+    <div class="card">
+
+        <h2>Select Your Symptoms</h2>
+        <p>Choose all that apply</p>
+
+        <!-- 🔴 YOU CAN ADD/REMOVE SYMPTOMS HERE -->
+        <div class="symptom"><span>Fever</span><input type="checkbox" id="fever"></div>
+        <div class="symptom"><span>Cough</span><input type="checkbox" id="cough"></div>
+        <div class="symptom"><span>Headache</span><input type="checkbox" id="headache"></div>
+        <div class="symptom"><span>Fatigue</span><input type="checkbox" id="fatigue"></div>
+        <div class="symptom"><span>Sore Throat</span><input type="checkbox" id="soreThroat"></div>
+        <div class="symptom"><span>Body Ache</span><input type="checkbox" id="bodyAche"></div>
+        <div class="symptom"><span>Nausea</span><input type="checkbox" id="nausea"></div>
+        <div class="symptom"><span>Runny Nose</span><input type="checkbox" id="runnyNose"></div>
+        <div class="symptom"><span>Shortness of Breath</span><input type="checkbox" id="breath"></div>
+
+        <!-- BUTTONS -->
+        <button class="main-btn analyze" onclick="analyze()">ANALYZE SYMPTOMS</button>
+        <button class="main-btn reset" onclick="resetAll()">RESET</button>
+
+    </div>
+
+    <!-- ===== RIGHT: RESULT ===== -->
+    <div class="card">
+
+        <h2>Analysis Result</h2>
+
+        <div class="result-box" id="resultBox">
+            <!-- 🔴 RESULT WILL APPEAR HERE -->
+            <p>No analysis yet.</p>
+        </div>
+
+        <!-- 🔴 HEALTH TIP -->
+        <div style="margin-top:15px;">
+            <b>Health Tip:</b>
+            <p>Early detection is the first step to a healthy life.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* 🔴 BACK BUTTON */
+function goBack() {
+    window.location.href = "index.html";
+}
+
+/* 🔴 MAIN ANALYSIS LOGIC */
+function analyze() {
+
+    let fever = document.getElementById("fever").checked;
+    let cough = document.getElementById("cough").checked;
+    let fatigue = document.getElementById("fatigue").checked;
+    let headache = document.getElementById("headache").checked;
+    let soreThroat = document.getElementById("soreThroat").checked;
+    let bodyAche = document.getElementById("bodyAche").checked;
+    let nausea = document.getElementById("nausea").checked;
+    let runnyNose = document.getElementById("runnyNose").checked;
+    let breath = document.getElementById("breath").checked;
+
+    let flu = 0, cold = 0, migraine = 0, viral = 0, food = 0, covid = 0, anxiety = 0;
+
+    if (fever) flu++;
+    if (cough) flu++;
+    if (fatigue) flu++;
+    if (bodyAche) flu++;
+
+    if (runnyNose) cold++;
+    if (soreThroat) cold++;
+    if (cough) cold++;
+
+    if (headache) migraine++;
+    if (fatigue) migraine++;
+
+    if (fever) viral++;
+    if (fatigue) viral++;
+    if (bodyAche) viral++;
+
+    if (nausea) food++;
+    if (fatigue) food++;
+
+    if (fever) covid++;
+    if (cough) covid++;
+    if (breath) covid++;
+    if (fatigue) covid++;
+
+    if (breath) anxiety++;
+    if (headache) anxiety++;
+
+    let result = "";
+
+    /* ===== DECISION + HEALTH TIPS ===== */
+
+    if (covid >= 3) {
+        result = `
+        <b>Possible Condition:</b> COVID-like Symptoms<br><br>
+        <b>Advice:</b> Monitor oxygen levels and consult a doctor.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Isolate yourself from others</li>
+            <li>Wear a mask</li>
+            <li>Stay hydrated</li>
+            <li>Seek medical help if breathing worsens</li>
+        </ul>`;
+    }
+
+    else if (flu >= 3) {
+        result = `
+        <b>Possible Condition:</b> Flu<br><br>
+        <b>Advice:</b> Rest and hydrate.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Drink warm fluids</li>
+            <li>Take adequate rest</li>
+            <li>Monitor body temperature</li>
+            <li>Avoid cold environments</li>
+        </ul>`;
+    }
+
+    else if (viral >= 2) {
+        result = `
+        <b>Possible Condition:</b> Viral Fever<br><br>
+        <b>Advice:</b> Stay hydrated and rest.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Drink ORS or water frequently</li>
+            <li>Eat light food</li>
+            <li>Take proper sleep</li>
+        </ul>`;
+    }
+
+    else if (food >= 1 && nausea) {
+        result = `
+        <b>Possible Condition:</b> Food Poisoning<br><br>
+        <b>Advice:</b> Avoid outside food.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Drink clean boiled water</li>
+            <li>Eat bland food (like khichdi)</li>
+            <li>Avoid oily/spicy food</li>
+            <li>Maintain hygiene</li>
+        </ul>`;
+    }
+
+    else if (cold >= 2) {
+        result = `
+        <b>Possible Condition:</b> Common Cold<br><br>
+        <b>Advice:</b> Warm fluids and rest.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Drink hot water or tea</li>
+            <li>Use steam inhalation</li>
+            <li>Keep yourself warm</li>
+        </ul>`;
+    }
+
+    else if (migraine >= 2) {
+        result = `
+        <b>Possible Condition:</b> Migraine<br><br>
+        <b>Advice:</b> Reduce stress and screen time.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Rest in a dark room</li>
+            <li>Avoid loud noise</li>
+            <li>Stay hydrated</li>
+        </ul>`;
+    }
+
+    else if (anxiety >= 1 && breath) {
+        result = `
+        <b>Possible Condition:</b> Anxiety / Breathing Issue<br><br>
+        <b>Advice:</b> Relax and breathe deeply.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Practice deep breathing</li>
+            <li>Meditate for 10 minutes</li>
+            <li>Avoid stress triggers</li>
+        </ul>`;
+    }
+
+    else {
+        result = `
+        <b>Condition:</b> Not clearly identified<br><br>
+        <b>Advice:</b> Consult a doctor.<br><br>
+        <b>Health Tips:</b>
+        <ul>
+            <li>Maintain a healthy diet</li>
+            <li>Stay hydrated</li>
+            <li>Get enough sleep</li>
+        </ul>`;
+    }
+
+    result += "<br><b>⚠️ Note:</b> This is not a medical diagnosis.";
+
+    document.getElementById("resultBox").innerHTML = result;
+}
+/* 🔴 RESET FUNCTION */
+function resetAll() {
+    document.querySelectorAll("input").forEach(i => i.checked = false);
+    document.getElementById("resultBox").innerHTML = "No analysis yet.";
+}
+
+</script>
+
+</body>
+</html>
